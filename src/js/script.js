@@ -12,7 +12,7 @@
 	var LabeledRect = fabric.util.createClass(fabric.Rect, {
 	  type: 'labeledRect',
 	  initialize: function(options) {
-	    options || (options = { });
+	    options = options || {};
 	    this.callSuper('initialize', options);
 	    this.set('label', options.label || '');
 	  },

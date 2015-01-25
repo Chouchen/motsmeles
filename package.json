@@ -1,0 +1,11 @@
+{
+  "name": "motsmeles",
+  "version": "0.0.1",
+  "description": "a simple 'mots mélés' game",
+  "author": "Shikiryu",
+  "devDependencies": {
+    "grunt-contrib-cssmin": "^0.11.0",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-contrib-uglify": "^0.7.0"
+  }
+}
