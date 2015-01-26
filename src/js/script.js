@@ -146,22 +146,6 @@
 	});
 
 	var nextStep = function nextStep() {
-		document.getElementById('answer-container').style.display = 'block';
-		document.getElementById('submit').addEventListener('click', answer, false);
-		document.getElementById('answer').addEventListener('keydown', answer, false);
-	};
-
-	var answer = function answer(evt) {
-		if(evt.type === 'keydown' && evt.keyCode === 13){
-			document.getElementById('submit').click();
-		}
-		var userAnswer = document.getElementById('answer').value;
-		if(userAnswer.toUpperCase() === reponse.toUpperCase()) {
-			finalStep();
-		}
-	};
-
-	var finalStep = function finalStep() {
-		document.getElementById("playground").classList.toggle("flip");
+		// TODO calling callback
 	};
 })(fabric, document, SIZE, NUMCASE, GRID, reponse, words);
