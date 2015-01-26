@@ -21,15 +21,26 @@ module.exports = function(grunt) {
         },
         jshint: {
             all: ['src/js/*.js']
+        },
+        copy: {
+            main: {
+                files: [
+                    {expand: true, cwd: 'src/', src: '*.html', dest: 'dist/', filter: 'isFile'},
+                    {expand: true, cwd: 'vendor/', src: '*.min.js', dest: 'dist/js/', filter: 'isFile'}
+                ]
+            }
+        },
+        clean: {
+            dist: ['dist/']
         }
     });
 
-    // Load the plugin that provides the "uglify" task.
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-    // Default task(s).
-    grunt.registerTask('default', ['jshint', 'uglify','cssmin' ]);
+    grunt.registerTask('default', ['clean', 'jshint', 'uglify', 'cssmin', 'copy']);
 
 };
