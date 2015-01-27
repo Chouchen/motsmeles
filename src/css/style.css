@@ -12,8 +12,8 @@ h1 {
 	color: #6C9BD9;
 	font-size: 50px;
 }
-ul {list-style: none; float: left; margin: 100px 0 50px 0; line-height: 28px;}
+ul {list-style: none; float: left; margin: 50px 30px; line-height: 20px; font-size: 16px}
 ul li.validate {color: green; font-weight: bold;  text-decoration : line-through;}
 ul li.validate:before {content: '\2713 '; color: green; font-weight: bold;}
-.canvas-container {float: left; margin: 100px 30px 30px 50px;}
-#playground {background: url(feuille-de-papier.jpg) top left no-repeat; display: block; width: 600px; height:600px; margin: 0 auto;}
+.canvas-container {float: left; margin: 50px 30px;}
+#playground {display: block; width: 600px; height:600px; margin: 0 auto;}
