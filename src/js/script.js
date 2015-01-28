@@ -1,4 +1,4 @@
-(function(fabric, document, SIZE, NUMCASE, GRID, reponse, words){
+(function(fabric, SIZE, GRID, words){
 	var canvas = new fabric.Canvas('c', { selection: false });
 	var i;
 	var j;
@@ -8,7 +8,7 @@
 	var end = [];
 	var isDragging = false;
 	var drawingLine;
-	canvas.setDimensions({width: SIZE*NUMCASE + NUMCASE, height: SIZE*NUMCASE + NUMCASE});
+
 	var LabeledRect = fabric.util.createClass(fabric.Rect, {
 	  type: 'labeledRect',
 	  initialize: function(options) {
@@ -66,29 +66,63 @@
 		}
 	};
 
-	// init grid
-	for (i = 0; i < NUMCASE; i++) {
-		for (j = 0; j < NUMCASE; j++) {
-			var rect = new LabeledRect({
-				left: i*SIZE,
-				top: j*SIZE,
-				fill: 'white',
-				stroke: 'black',
-				width: SIZE,
-				height: SIZE,
-				label: GRID[j][i],
-				selectable: false
-			});
-			canvas.add(rect);
+	var validateGrid = function validateGrid() {
+		var i = 1;
+		var l = GRID.length;
+		var supposed;
+		if(l !== 0 && GRID[0]) {
+			supposed = GRID[0].length;
+			for(;i<l;i++) {
+				if(GRID[i].length !== supposed){
+					return false;
+				}
+			}
+			return true;
 		}
-	}
-	// init words
-	// TODO eurk
-	for(var uno = 0; uno < words.length; uno++) {
-		var tmpLi = document.createElement('li');
-		tmpLi.innerHTML = words[uno].toUpperCase();
-		document.getElementById('words').appendChild(tmpLi);
-	}
+		return false;
+	};
+
+	// init grid
+	var init = function init() {
+		if(validateGrid()) {
+			var numHeight = GRID.length;
+			var numWidth = GRID[0].length;
+			var ulContent = document.createDocumentFragment();
+			var tmpLi;
+
+			canvas.setDimensions({width: SIZE*numWidth + numWidth, height: SIZE*numHeight + numHeight});
+
+			for (i = 0; i < numWidth; i++) {
+				for (j = 0; j < numHeight; j++) {
+					var rect = new LabeledRect({
+						left: i * SIZE,
+						top: j * SIZE,
+						fill: 'white',
+						stroke: 'black',
+						width: SIZE,
+						height: SIZE,
+						label: GRID[j][i],
+						selectable: false
+					});
+					canvas.add(rect);
+				}
+			}
+
+			words.forEach(
+				function(value, index){
+					tmpLi = document.createElement('li');
+					tmpLi.innerHTML = value.toUpperCase();
+					ulContent.appendChild(tmpLi);
+				}
+			);
+
+			document.getElementById('words').appendChild(ulContent);
+
+		} else {
+			throw new Error('invalid grid');
+		}
+	};
+
 
 	canvas.on('mouse:down', function(options) {
 		isDragging 	= true;
@@ -148,4 +182,8 @@
 	var nextStep = function nextStep() {
 		// TODO calling callback
 	};
-})(fabric, document, SIZE, NUMCASE, GRID, reponse, words);
+
+	// let's call our game
+	init();
+
+})(fabric, SIZE, GRID, words);
