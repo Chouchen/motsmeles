@@ -28,10 +28,24 @@ module.exports = function(grunt) {
                     {expand: true, cwd: 'src/', src: '*.html', dest: 'dist/', filter: 'isFile'},
                     {expand: true, cwd: 'vendor/', src: '*.min.js', dest: 'dist/js/', filter: 'isFile'}
                 ]
+            },
+            dev: {
+                files: [
+                    {expand: true, cwd: 'src/', src: '*.html', dest: 'dist/', filter: 'isFile'},
+                    {expand: true, cwd: 'vendor/', src: '*.min.js', dest: 'dist/js/', filter: 'isFile'},
+                    {expand: true, cwd: 'src/js/', src: '*.js', dest: 'dist/js/', filter: 'isFile'},
+                    {expand: true, cwd: 'src/css/', src: '*.js', dest: 'dist/js/', filter: 'isFile'}
+                ]
+            }
+        },
+        concat: {
+            dist: {
+                src: ['src/js/*.js'],
+                dest: 'dist/js/<%= pkg.name %>.min.js'
             }
         },
         clean: {
-            dist: ['dist/']
+            dist: ['dist/js','dist/css','index.html']
         }
     });
 
@@ -40,7 +54,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
-    grunt.registerTask('default', ['clean', 'jshint', 'uglify', 'cssmin', 'copy']);
+    grunt.registerTask('default', ['clean:dist', 'jshint', 'uglify', 'cssmin', 'copy:main']);
+    grunt.registerTask('dev', ['clean:dist', 'jshint', 'concat', 'copy:dev']);
 
 };

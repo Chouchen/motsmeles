@@ -33,6 +33,7 @@
 		var result = -1;
 		var isHorizontal = origin[0] === end[0];
 		var isVertical = origin[1] === end[1];
+		var isDiagonal = Math.abs(origin[0]-end[0]) === Math.abs(origin[1]-end[1]);
 		var x;
 		var first;
 		var last;
@@ -49,6 +50,15 @@
 			last = Math.max(origin[0], end[0]);
 			for( x=first;x<=last; x++ ) {
 				word += GRID[x][origin[1]];
+			}
+			return Math.max(words.indexOf(word), words.indexOf(word.split('').reverse().join('')));
+		} else if(isDiagonal) {
+			var xRight = origin[0] - end[0] < 0;
+			var yDown = origin[1] - end[1] < 0;
+			var i = 0;
+			var loopTime = Math.abs(origin[0]-end[0]);
+			for (;i<=loopTime;i++) {
+				word += GRID[xRight ? origin[0] + i : origin[0] - i][yDown ? origin[1] +i : origin[1] - i];
 			}
 			return Math.max(words.indexOf(word), words.indexOf(word.split('').reverse().join('')));
 		}
@@ -98,7 +108,7 @@
 		drawingLine = new fabric.Line(points, {
 					stroke: 'black',
 					strokeLineCap: 'round',
-					strokeWidth: SIZE/2,
+					strokeWidth: SIZE/6,
 					originX: 'center',
 					originY: 'center'
 				});
@@ -128,7 +138,7 @@
 				var line = new fabric.Line(lineCoord, {
 					stroke: 'black',
 					strokeLineCap: 'round',
-					strokeWidth: SIZE/2,
+					strokeWidth: SIZE/6,
 					originX: 'center',
 					originY: 'center',
 					selectable: false
