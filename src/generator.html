@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>mots mélés generator</title>
+    <style>
+        .inputGrid { width: 10px; height: 10px; float:left;}
+        .clearboth {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <aside id="generator-options">
+        <label for="grid-width"><input type="number" id="grid-width" min="1" max="20" step="1" name="grid-width" value="1"/></label>
+        <label for="grid-height"><input type="number" id="grid-height" min="1" max="20" step="1" name="grid-height" value="1"/></label>
+    </aside>
+    <section id="generator-grid"></section>
+</body>
+<script>
+    var grid = [];
+    var width = 1;
+    var height= 1;
+    var current = { word : '', start: [], end: [] };
+    var sens;
+    var isChoosingSens = false;
+    var inputGrid = document.getElementById('generator-grid');
+
+    var modifyGridSize = function modifyGridSize() {
+        var currentWidth = width;//grid[0] ? grid[0].length : 0;
+        var currentHeight = height;//grid.length;
+        console.log('grid size is ' + currentWidth + ' x ' + currentHeight);
+        var iHtml = '';
+        for(var i = 0,l = currentHeight; i <l ; i++) {
+            for (var j = 0, m = currentWidth; j<m; j++) {
+                iHtml += '<input type="text" class="inputGrid" maxlength="1"/>';
+            }
+            iHtml += '<div class="clearboth"></div>';
+        }
+        inputGrid.innerHTML = iHtml;
+        dynamicEvents();
+    };
+    document.getElementById('grid-width').addEventListener("change", function(evt){
+        width = evt.currentTarget.value;
+        modifyGridSize();
+    }, false);
+    document.getElementById('grid-height').addEventListener("change", function(evt){
+        height = evt.currentTarget.value;
+        modifyGridSize();
+    }, false);
+
+    document.body.addEventListener("keydown", function(evt) {
+//        left = 37
+//        up = 38
+//        right = 39
+//        down = 40
+        var senses = [37,38,39,40];
+        if (isChoosingSens && senses.indexOf(evt.keyCode) !== -1 ) {
+            sens = evt.keyCode;
+            console.log("sens is " + sens);
+        }
+    }, false);
+
+    var chooseSens = function chooseSens() {
+        isChoosingSens = true;
+        console.log('choose a sens !');
+    };
+
+    var validWord = function validWord() {
+        console.log('todo validword');
+    };
+
+    var goToNextCase = function goToNextCase() {
+        console.log('todo gotonext');
+    };
+
+    var gridFocus = function gridFocus(evt) {
+        if(sens == undefined && !isChoosingSens) {
+            chooseSens();
+        }
+    };
+
+    var gridKeydown = function gridKeydown(evt) {
+        var typedKey = evt.keyCode;
+//        left = 37
+//        up = 38
+//        right = 39
+//        down = 40
+        var senses = [37,38,39,40];
+        if (isChoosingSens && senses.indexOf(evt.keyCode) !== -1 ) {
+            sens = evt.keyCode;
+            isChoosingSens = false;
+            console.log("sens is " + sens);
+        } else if (typedKey === 13) {
+            validWord();
+            sens = void 0;
+            current.word = '';
+        } else {
+            current.word += typedKey;
+            goToNextCase();
+        }
+    };
+
+    var dynamicEvents = function dynamicEvents() {
+        var inputs = document.getElementsByClassName('inputGrid');
+        var inputsLength = inputs.length;
+        for (var i = 0; i < inputsLength; i++) {
+            var input = inputs[i];
+            input.removeEventListener("focus",gridFocus);
+            input.removeEventListener("keydown",gridKeydown);
+
+            input.addEventListener("focus", gridFocus.bind(this), false);
+            input.addEventListener("keydown", gridKeydown.bind(this), false);
+        }
+    };
+
+</script>
+</html>
