@@ -4,8 +4,8 @@ var width = 1;
 var height= 1;
 var SIZE = 30;
 var currentModeText = document.getElementById('currentMode');
-var inputGrid = document.getElementById('generator-grid');
-var canvas = new fabric.Canvas('c', { selection: false });
+var inputGrid;
+var canvas;
 var LabeledRect = fabric.util.createClass(fabric.Rect, {
     type: 'labeledRect',
     initialize: function(options) {
@@ -25,8 +25,19 @@ var LabeledRect = fabric.util.createClass(fabric.Rect, {
         ctx.fillText(this.label, -this.width/2 + 5, -this.height/2 + 20);
     }
 });
+var stepSection = document.getElementById('step');
 
 var initGrid = function() {
+    stepSection.innerHTML = '<div id="grid">'+
+        '<aside id="generator-options">'+
+        '<label for="grid-width"><input type="number" id="grid-width" min="1" max="20" step="1" name="grid-width" value="1"/></label>'+
+        '<label for="grid-height"><input type="number" id="grid-height" min="1" max="20" step="1" name="grid-height" value="1"/></label>'+
+        '</aside>'+
+        '<section id="generator-grid"></section>'+
+        '<button id="validateGrid">Validate</button>'+
+        '</div>';
+    currentModeText.innerHTML = 'Fill the grid with letters';
+    inputGrid = document.getElementById('generator-grid');
     // grid
     var modifyGridSize = function modifyGridSize() {
         var currentWidth = width;//grid[0] ? grid[0].length : 0;
@@ -81,7 +92,7 @@ var initGrid = function() {
             default: nextCase = currentCase;
                 break;
         }
-        if(nextCase != undefined) {
+        if(nextCase !== undefined) {
             nextCase.focus();
         }
     };
@@ -107,7 +118,7 @@ var initGrid = function() {
     var isGridValid = function isGridValid() {
         for (var i = 0,l = height; i <l ; i++) {
             for (var j = 0, m = width; j<m; j++) {
-                if (document.querySelector('.inputGrid[data-x="'+j+'"][data-y="'+i+'"]').value == '') {
+                if (document.querySelector('.inputGrid[data-x="'+j+'"][data-y="'+i+'"]').value === '') {
                     return false;
                 }
             }
@@ -130,6 +141,13 @@ var initGrid = function() {
     }, false);
 };
 var initWords = function initWords() {
+    stepSection.innerHTML = '<div id="wordsList">'+
+        '<canvas id="c"></canvas>'+
+        '<ul id="words"></ul>'+
+        '<button id="validateWord">Validate</button>'+
+        '</div>';
+    currentModeText.innerHTML = 'Cross all your words';
+    canvas = new fabric.Canvas('c', { selection: false });
     var numHeight = grid.length;
     var numWidth = grid[0].length;
     var ulContent = document.createDocumentFragment();
@@ -210,21 +228,34 @@ var initWords = function initWords() {
         var isVertical = origin[1] === end[1];
         var isDiagonal = Math.abs(origin[0]-end[0]) === Math.abs(origin[1]-end[1]);
         var x;
-        var first;
-        var last;
+        var toGo = [];
         var word = '';
+        var range = function range(origin, end) {
+            var matrix = [];
+            var plus;
+            plus = origin <= end;
+            if (plus) {
+                while (origin <= end) {
+                    matrix.push(origin);
+                    origin ++;
+                }
+            } else {
+                while (origin >= end) {
+                    matrix.push(origin);
+                    origin --;
+                }
+            }
+            return matrix;
+        };
+
         if(isHorizontal) {
-            first = Math.min(origin[1], end[1]);
-            last = Math.max(origin[1], end[1]);
-            for( x=first;x<=last; x++ ) {
-                word += grid[origin[0]][x];
-            }
+            range(origin[1], end[1]).forEach(function(elt) {
+                word += grid[origin[0]][elt];
+            });
         }else if (isVertical) {
-            first = Math.min(origin[0], end[0]);
-            last = Math.max(origin[0], end[0]);
-            for( x=first;x<=last; x++ ) {
-                word += grid[x][origin[1]];
-            }
+            range(origin[0], end[0]).forEach(function(elt) {
+                word += grid[elt][origin[1]];
+            });
         } else if(isDiagonal) {
             var xRight = origin[0] - end[0] < 0;
             var yDown = origin[1] - end[1] < 0;
@@ -243,6 +274,10 @@ var initWords = function initWords() {
     }, false);
 };
 var initSave = function initSave() {
+    currentModeText.innerHTML = 'Copy this in your game and that\'s it. :)';
+    stepSection.innerHTML = '<div id="validate">'+
+        '<textarea></textarea>'+
+        '</div>';
     // save
     var arrayToString = function arrayToString(array) {
         var result = '[';
